@@ -1,6 +1,4 @@
 from Modules.Search_Problem.search_problem import Search_Problem
-from Modules.Search_Problem.node import Node
-import numpy as np
 
 
 # The state is represented by an array, where the empty tile is denoted by 0 and other tiles are denoted 1-N
