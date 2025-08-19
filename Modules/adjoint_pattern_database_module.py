@@ -9,3 +9,11 @@ def calculate_array_size(number_of_tiles : int, k : int) -> int:
     
     # Calculate the size of the array needed to store the tile configurations
     return math.prod(range(number_of_tiles, number_of_tiles - k - 1, -1))
+
+
+class AdjointPatternProblem:
+
+
+def generate_adjoint_patterns(number_of_tiles: int, k: int) -> np.ndarray:
+    array_size = calculate_array_size(number_of_tiles, k)
+    return np.zeros((array_size, k), dtype=int)
