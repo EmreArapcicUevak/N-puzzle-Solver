@@ -18,7 +18,7 @@ class N_Puzzle_Problem(Search_Problem):
 
     def IS_GOAL(self, state):
         # Check if the current state is the goal state
-        return np.array_equal(state, self.goal_state)
+        return state == self.goal_state
 
     def ACTIONS(self, state : tuple):
         actions = []
@@ -34,8 +34,29 @@ class N_Puzzle_Problem(Search_Problem):
         return actions
 
     def RESULT(self, state, action):
-        # Return the resulting state after applying the action
-        pass
+      # Return the resulting state after applying the action
+      empty_index = state.index(0)
+      x, y = self._translate_position(empty_index)
+
+      # Compute new coordinates based on action
+      if action == "left":
+          new_x, new_y = x - 1, y
+      elif action == "right":
+          new_x, new_y = x + 1, y
+      elif action == "up":
+          new_x, new_y = x, y - 1
+      elif action == "down":
+          new_x, new_y = x, y + 1
+      else:
+          raise ValueError(f"Invalid action: {action}")
+
+      # Convert back to 1D index
+      swap_index = self._translate_index(new_x, new_y)
+
+      # Create new tuple with swapped values
+      state_list = list(state)   # convert tuple → list
+      state_list[empty_index], state_list[swap_index] = state_list[swap_index], state_list[empty_index]
+      return tuple(state_list)   # back to tuple
     
     def ACTION_COST(self, state, action, new_state):
         # Return the cost of the action (uniform cost in this case)
@@ -45,3 +66,8 @@ class N_Puzzle_Problem(Search_Problem):
         # Translate a 1D position to 2D coordinates
         assert 0 <= pos < self.n, "Invalid position."
         return (pos % self.board_dim, pos // self.board_dim)
+
+    def _translate_index(self, x : int, y : int) -> int:
+        # Translate 2D coordinates to a 1D position
+        assert 0 <= x < self.board_dim and 0 <= y < self.board_dim, "Invalid position."
+        return x + y * self.board_dim
