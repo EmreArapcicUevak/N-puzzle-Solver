@@ -6,7 +6,7 @@ class Node():
     self.depth = 0 if parent is None else parent.depth + 1
 
   def __str__(self):
-    return f"|Node|  State: {self.state} | Parent: {self.parent.state if self.parent else None} | Path Cost: {self.path_cost}\n"
+    return self.__repr__()
 
   def __eq__(self, value: object) -> bool:
     return self.state == value.state if isinstance(value, Node) else False
