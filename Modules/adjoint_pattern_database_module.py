@@ -78,7 +78,7 @@ def generate_adjoint_patterns(board_dim: int, focus_tiles: tuple, goal_state: tu
                 reached[child.state] = child.path_cost
 
 
-    save_pattern_db(pattern_db=generate_pattern_dictionary(reached, backwards_problem), n=number_of_tiles, tiles=focus_tiles)
+    save_pattern_db(pattern_db=generate_pattern_dictionary(reached, backwards_problem), n=number_of_tiles, tiles=focus_tiles, goal_state=goal_state)
 
   return reached
 
@@ -86,11 +86,11 @@ def generate_adjoint_patterns(board_dim: int, focus_tiles: tuple, goal_state: tu
 import pickle
 import os
 
-def save_pattern_db(pattern_db, n, tiles):
+def save_pattern_db(pattern_db, n, tiles, goal_state):
     folder = f"Pattern_Databases/"
     os.makedirs(folder, exist_ok=True)
 
-    filename = f"N{n}_tiles_{'_'.join(map(str, tiles))}.pkl"
+    filename = f"N{n}_tiles_{'_'.join(map(str, tiles))}_goal_{'_'.join(map(str, goal_state))}.pkl"
     path = os.path.join(folder, filename)
 
     with open(path, "wb") as f:
@@ -100,7 +100,7 @@ def save_pattern_db(pattern_db, n, tiles):
 
 def load_pattern_db(problem : N_Puzzle_Problem, tiles):
     folder = f"Pattern_Databases/"
-    filename = f"N{problem.n}_tiles_{'_'.join(map(str, tiles))}.pkl"
+    filename = f"N{problem.n}_tiles_{'_'.join(map(str, tiles))}_goal_{'_'.join(map(str, problem.goal_state))}.pkl"
     path = os.path.join(folder, filename)
 
     # If file doesn't exist → generate it
