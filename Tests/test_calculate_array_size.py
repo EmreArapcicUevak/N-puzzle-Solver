@@ -1,7 +1,7 @@
-from Modules.adjoint_pattern_database_module import calculate_array_size
 import pytest
 
 def test_calculate_array_size():
+    from Modules.adjoint_pattern_database_module import calculate_array_size
     assert calculate_array_size(9, 4) == 15120
     assert calculate_array_size(9, 3) == 3024
     assert calculate_array_size(9, 2) == 504
@@ -9,6 +9,7 @@ def test_calculate_array_size():
     assert calculate_array_size(9, 0) == 9
 
 def test_invalid_input():
+    from Modules.adjoint_pattern_database_module import calculate_array_size
     with pytest.raises(TypeError):
         calculate_array_size("9", 4)
 
