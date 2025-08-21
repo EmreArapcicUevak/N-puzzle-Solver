@@ -64,7 +64,7 @@ def generate_adjoint_patterns(board_dim: int, focus_tiles: tuple, goal_state: tu
   frontier.push(root_node)
 
   with Progress() as progress:
-    total_states = math.perm(number_of_tiles, number_of_tiles)
+    total_states = math.perm(number_of_tiles, number_of_tiles)/2
     task = progress.add_task("[cyan]Generating adjoint patterns...", total=total_states)
 
     while len(frontier) > 0:
