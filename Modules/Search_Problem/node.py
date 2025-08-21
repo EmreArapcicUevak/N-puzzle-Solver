@@ -24,7 +24,7 @@ class Node():
 
     return path[::-1]
   
-  def get_actions(self):
+  def get_actions(self) -> list[str]:
     actions = []
     current = self
     while current:
