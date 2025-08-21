@@ -2,6 +2,7 @@ from Modules.Search_Problem.search_problem import Search_Problem
 from Modules.Search_Problem.node import Node
 from Modules.Search_Problem.expand import expand
 from Modules.que import Priority_Que
+from typing import Callable
 
 # The state is represented by an array, where the empty tile is denoted by 0 and other tiles are denoted 1-N
 class N_Puzzle_Problem(Search_Problem):
@@ -74,35 +75,26 @@ class N_Puzzle_Problem(Search_Problem):
         return x + y * self.board_dim
 
 
-def manhattan_distance_heuristic(n : Node, problem : N_Puzzle_Problem):
-    state : tuple = n.state
-    goal_state = problem.goal_state
 
-    distance = 0
-    for i in range(len(state)):
-        tile = state[i]
-        if tile != 0:  # Skip the empty tile
-            current_x, current_y = problem._translate_position(i)
-            goal_x, goal_y = problem._translate_position(goal_state.index(tile))
-            distance += abs(current_x - goal_x) + abs(current_y - goal_y)
-
-    return distance
-
-def N_Puzzle_Solver(n_puzzle_problem : N_Puzzle_Problem):
+def N_Puzzle_Solver(n_puzzle_problem : N_Puzzle_Problem, heuristic : Callable[[Node], float | int] | None = None):
     # Implement the A* search algorithm or any other search algorithm
-    h = lambda n: manhattan_distance_heuristic(n, n_puzzle_problem)
-    f = lambda n: n.path_cost + h(n)
+    f = None
+    if heuristic:
+        f = lambda n: n.path_cost + heuristic(n)
+    else:
+        f = lambda n: n.path_cost
 
+    root_node = Node(state=n_puzzle_problem.initial_state)
+
+    reached = {root_node.state: 0}
     frontier = Priority_Que(evaluation_func=f)
-    reached = {}
-    
-    frontier.push(Node(state=n_puzzle_problem.initial_state))
+    frontier.push(root_node)
+
     while len(frontier) > 0:
         current_node = frontier.pop()
         if n_puzzle_problem.IS_GOAL(current_node.state):
             return current_node
-
-        if current_node.state in reached and reached[current_node.state] < current_node.path_cost:
+        elif reached[current_node.state] < current_node.path_cost:
             continue
 
         for child_node in expand(n_puzzle_problem, current_node):
@@ -111,27 +103,4 @@ def N_Puzzle_Solver(n_puzzle_problem : N_Puzzle_Problem):
                 frontier.push(child_node)
 
 
-def N_Puzzle_Solver_PDB(n_puzzle_problem : N_Puzzle_Problem, tiles : tuple):
-    from Modules.adjoint_pattern_database_module import load_pattern_db
-
-    # Implement the A* search algorithm or any other search algorithm
-    pdb = load_pattern_db(n_puzzle_problem.n, tiles)
-    print("Pattern Database Loaded:")
-        
-    h = lambda n: pdb.get(n.state, float('inf'))  # Use the pattern database for the heuristic
-    f = lambda n: n.path_cost + h(n)
-
-    frontier = Priority_Que(evaluation_func=f)
-    reached = {}
-    
-    frontier.push(Node(state=n_puzzle_problem.initial_state))
-    while len(frontier) > 0:
-        current_node = frontier.pop()
-        if n_puzzle_problem.IS_GOAL(current_node.state):
-            return current_node
-
-
-        for child_node in expand(n_puzzle_problem, current_node):
-            if reached.get(child_node.state) is None or reached[child_node.state] > child_node.path_cost:
-                reached[child_node.state] = child_node.path_cost
-                frontier.push(child_node)
+    return None
