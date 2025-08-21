@@ -1,4 +1,7 @@
 from Modules.Search_Problem.search_problem import Search_Problem
+from Modules.Search_Problem.node import Node
+from Modules.Search_Problem.expand import expand
+from Modules.que import Priority_Que
 
 # The state is represented by an array, where the empty tile is denoted by 0 and other tiles are denoted 1-N
 class N_Puzzle_Problem(Search_Problem):
@@ -70,9 +73,6 @@ class N_Puzzle_Problem(Search_Problem):
         assert 0 <= x < self.board_dim and 0 <= y < self.board_dim, "Invalid position."
         return x + y * self.board_dim
 
-from Modules.Search_Problem.node import Node
-from Modules.Search_Problem.expand import expand
-from Modules.que import Priority_Que
 
 def manhattan_distance_heuristic(n : Node, problem : N_Puzzle_Problem):
     state : tuple = n.state
@@ -110,9 +110,10 @@ def N_Puzzle_Solver(n_puzzle_problem : N_Puzzle_Problem):
                 reached[child_node.state] = child_node.path_cost
                 frontier.push(child_node)
 
-from Modules.adjoint_pattern_database_module import load_pattern_db
 
 def N_Puzzle_Solver_PDB(n_puzzle_problem : N_Puzzle_Problem, tiles : tuple):
+    from Modules.adjoint_pattern_database_module import load_pattern_db
+
     # Implement the A* search algorithm or any other search algorithm
     pdb = load_pattern_db(n_puzzle_problem.n, tiles)
     print("Pattern Database Loaded:")
