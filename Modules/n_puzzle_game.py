@@ -33,7 +33,7 @@ class N_Puzzle_Problem(SearchProblem):
 
         return actions
 
-    def RESULT(self, state, action):
+    def RESULTS(self, state, action):
       # Return the resulting state after applying the action
       empty_index = state.index(0)
       x, y = self._translate_position(empty_index)
