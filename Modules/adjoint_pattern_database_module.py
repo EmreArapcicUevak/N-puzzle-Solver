@@ -1,8 +1,7 @@
 import math
-from Modules.Search_Problem.expand import expand
-from Modules.Search_Problem.node import Node
 from Modules.n_puzzle_game import N_Puzzle_Problem
-from Modules.que import Priority_Que
+from aima_toolkit.SearchProblemPackage.queue import PriorityQueue
+from aima_toolkit.SearchProblemPackage import expand, Node
 
 def calculate_array_size(number_of_tiles : int, k : int) -> int:
     if not isinstance(number_of_tiles, int) or not isinstance(k, int):
@@ -58,7 +57,7 @@ def generate_adjoint_patterns(board_dim: int, focus_tiles: tuple, goal_state: tu
 
   root_node = Node(state=goal_state)
 
-  frontier = Priority_Que(evaluation_func=lambda node: node.path_cost)
+  frontier = PriorityQueue(evaluation_func=lambda node: node.path_cost)
   reached = {}
 
   frontier.push(root_node)
@@ -107,7 +106,6 @@ def load_pattern_db(problem : N_Puzzle_Problem, tiles):
     if not os.path.exists(path):
         print(f"[!] Pattern DB not found at {path}. Generating...")
         # Import here to avoid circular import
-        from Modules.adjoint_pattern_database_module import generate_adjoint_patterns  
         generate_adjoint_patterns(board_dim=problem.board_dim, focus_tiles=tiles, goal_state=problem.goal_state)
 
     # Now load it

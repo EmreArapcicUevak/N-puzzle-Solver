@@ -1,11 +1,9 @@
-from Modules.Search_Problem.search_problem import Search_Problem
-from Modules.Search_Problem.node import Node
-from Modules.Search_Problem.expand import expand
-from Modules.que import Priority_Que
-from typing import Callable
+from aima_toolkit.SearchProblemPackage.searchproblem import SearchProblem, Heuristic
+from aima_toolkit.SearchProblemPackage.SearchAlgorithms.InformedSearch import a_star_search
+from aima_toolkit.SearchProblemPackage.SearchAlgorithms.UninformedSearch import uniform_cost_search
 
 # The state is represented by an array, where the empty tile is denoted by 0 and other tiles are denoted 1-N
-class N_Puzzle_Problem(Search_Problem):
+class N_Puzzle_Problem(SearchProblem):
     def __init__(self, board_dim : int, initial_state : tuple, goal_state : tuple):
         super().__init__(initial_state)
         self.goal_state = goal_state
@@ -35,7 +33,7 @@ class N_Puzzle_Problem(Search_Problem):
 
         return actions
 
-    def RESULT(self, state, action):
+    def RESULTS(self, state, action):
       # Return the resulting state after applying the action
       empty_index = state.index(0)
       x, y = self._translate_position(empty_index)
@@ -75,32 +73,8 @@ class N_Puzzle_Problem(Search_Problem):
         return x + y * self.board_dim
 
 
-
-def N_Puzzle_Solver(n_puzzle_problem : N_Puzzle_Problem, heuristic : Callable[[Node], float | int] | None = None):
-    # Implement the A* search algorithm or any other search algorithm
-    f = None
+def N_Puzzle_Solver(n_puzzle_problem : N_Puzzle_Problem, heuristic : Heuristic | None = None):
     if heuristic:
-        f = lambda n: n.path_cost + heuristic(n)
+        return a_star_search(n_puzzle_problem, heuristic)
     else:
-        f = lambda n: n.path_cost
-
-    root_node = Node(state=n_puzzle_problem.initial_state)
-
-    reached = {root_node.state: 0}
-    frontier = Priority_Que(evaluation_func=f)
-    frontier.push(root_node)
-
-    while len(frontier) > 0:
-        current_node = frontier.pop()
-        if n_puzzle_problem.IS_GOAL(current_node.state):
-            return current_node
-        elif reached[current_node.state] < current_node.path_cost:
-            continue
-
-        for child_node in expand(n_puzzle_problem, current_node):
-            if reached.get(child_node.state) is None or reached[child_node.state] > child_node.path_cost:
-                reached[child_node.state] = child_node.path_cost
-                frontier.push(child_node)
-
-
-    return None
+        return uniform_cost_search(n_puzzle_problem)
